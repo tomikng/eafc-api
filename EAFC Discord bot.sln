@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34202.233
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAFC Discord bot", "EAFC Discord bot\EAFC Discord bot.csproj", "{A622C040-0852-4B17-A780-46EB7646F982}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A622C040-0852-4B17-A780-46EB7646F982}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A622C040-0852-4B17-A780-46EB7646F982}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A622C040-0852-4B17-A780-46EB7646F982}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A622C040-0852-4B17-A780-46EB7646F982}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2FF1390A-439E-49F8-9070-DB4F7CFC0DD6}
+	EndGlobalSection
+EndGlobal
