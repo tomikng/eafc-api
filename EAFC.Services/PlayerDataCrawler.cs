@@ -26,7 +26,6 @@ namespace EAFC.Services
             var doc = await _web.LoadFromWebAsync(_dataUrl);
             var players = new List<Player>();
 
-            // Navigate to the table and its body
             var table = doc.DocumentNode.SelectSingleNode("//table[@class='table table-new-players']");
             var rows = table.SelectNodes(".//tr[starts-with(@class, 'player_tr')]");
 
