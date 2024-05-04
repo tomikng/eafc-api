@@ -1,10 +1,6 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using EAFC.Core.Models;
+﻿using EAFC.Core.Models;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 
 namespace EAFC.Services
 {
