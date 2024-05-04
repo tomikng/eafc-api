@@ -1,0 +1,6 @@
+@EAFC.Api_HostAddress = http://localhost:5204
+
+GET {{EAFC.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
