@@ -88,10 +88,11 @@ public class DiscordNotificationService : INotificationService
     }
 
 
-    private string FormatPlayers(List<Player> players)
+    private string? FormatPlayers(List<Player> players)
     {
         if (players.Count == 0)
-            return "No new players found.";
+            // return "No new players found.";
+            return null;
 
         var builder = new StringBuilder();
         builder.AppendLine("Latest Players:");
@@ -114,7 +115,8 @@ public class DiscordNotificationService : INotificationService
         if (await _client.GetChannelAsync(channelId) is IMessageChannel channel)
         {
             var message = FormatPlayers(players);
-            await channel.SendMessageAsync(message);
+            if(message != null)
+                await channel.SendMessageAsync(message);
         }
         else
         {
