@@ -1,21 +1,32 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:EAFC.Configurator.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModels="clr-namespace:EAFC.Configurator.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="EAFC.Configurator.Views.MainWindow"
+        xmlns:vm="clr-namespace:EAFC.Configurator.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=True}"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="EAFC.Configurator">
+        x:Class="EAFC.Configurator.Views.MainWindow"
+        Title="EAFC Notification Bot" Width="600" Height="500">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <viewModels:MainWindowViewModel/>
-    </Design.DataContext>
-
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+    <TabControl Margin="10">
+        <TabItem Header="General">
+            <StackPanel>
+                <CheckBox Content="Enable Notifications" IsChecked="{Binding EnableNotifications}"/>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="Discord">
+            <StackPanel Margin="10">
+                <TextBlock Text="Discord Settings" FontWeight="Bold" FontSize="14"/>
+                <CheckBox Content="Enable Discord Notifications" IsChecked="{Binding EnableDiscord}"/>
+                <TextBlock Text="Token:" Margin="0,10,0,0"/>
+                <TextBox Text="{Binding DiscordToken}" Watermark="Enter Discord Bot Token"/>
+                <TextBlock Text="Guild ID:" Margin="0,10,0,0"/>
+                <TextBox Text="{Binding GuildId}" Watermark="Enter Guild ID"/>
+                <TextBlock Text="Channel ID:" Margin="0,10,0,0"/>
+                <TextBox Text="{Binding ChannelId}" Watermark="Enter Channel ID"/>
+                <Button Content="Save Configuration" Command="{Binding SaveCommand}" Margin="10,20,0,0"/>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
 </Window>
