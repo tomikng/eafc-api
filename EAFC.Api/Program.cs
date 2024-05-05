@@ -10,32 +10,25 @@ using Quartz.Spi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddScoped<IPlayerService, PlayerService>(); 
 builder.Services.AddScoped<PlayerDataCrawler>();
 
-// Quartz configuration
 builder.Services.AddQuartz(q =>
 {
-    // Register your job
     var jobKey = new JobKey("CrawlingJob");
     q.AddJob<CrawlingJob>(opts => opts.WithIdentity(jobKey));
 
-    // Create a trigger for the job
     q.AddTrigger(opts => opts
-        .ForJob(jobKey) // Links this trigger to the CrawlingJob
-        .WithIdentity("CrawlingJobTrigger") // Give the trigger a unique name
+        .ForJob(jobKey) 
+        .WithIdentity("CrawlingJobTrigger")
         .WithCronSchedule("0 5 7 * * ?"));
 });
 
-// Register Quartz as a hosted service
 builder.Services.AddQuartzHostedService(q =>
 {
-    // When shutting down, wait for jobs to complete
     q.WaitForJobsToComplete = true;
 });
 
-// Configure the rest of your services
 builder.Services.AddSingleton<INotificationService, DiscordNotificationService>(provider => new DiscordNotificationService(
     builder.Configuration["DiscordBotToken"] ?? throw new InvalidOperationException(),
     provider));
@@ -49,7 +42,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 var app = builder.Build();
 
-// Initialize Discord bot
 var discordService = app.Services.GetRequiredService<INotificationService>() as DiscordNotificationService;
 discordService?.InitializeAsync().GetAwaiter().GetResult();
 
