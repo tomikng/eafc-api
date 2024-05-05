@@ -9,5 +9,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0-preview.3.24172.9" />
+        <PackageReference Include="Quartz" Version="3.8.1" />
     </ItemGroup>
 </Project>

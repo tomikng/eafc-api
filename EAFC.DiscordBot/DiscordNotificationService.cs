@@ -109,7 +109,7 @@ public class DiscordNotificationService : INotificationService
     
     public async Task SendAsync(string message)
     {
-        ulong channelId = 1236627776577077308; // Replace dynamically in config file
+        const ulong channelId = 1236627776577077308; // Replace dynamically in config file
         if (await _client.GetChannelAsync(channelId) is IMessageChannel channel)
         {
             await channel.SendMessageAsync(message);

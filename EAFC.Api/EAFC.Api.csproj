@@ -12,12 +12,16 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Quartz" Version="3.8.1" />
+        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.8.1" />
+        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.8.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\EAFC.Data\EAFC.Data.csproj" />
       <ProjectReference Include="..\EAFC.DiscordBot\EAFC.DiscordBot.csproj" />
+      <ProjectReference Include="..\EAFC.Jobs\EAFC.Jobs.csproj" />
       <ProjectReference Include="..\EAFC.Notifications\EAFC.Notifications.csproj" />
       <ProjectReference Include="..\EAFC.Services\EAFC.Services.csproj" />
     </ItemGroup>

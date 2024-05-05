@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAFC.DiscordBot", "EAFC.Dis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAFC.Configurator", "EAFC.Configurator\EAFC.Configurator.csproj", "{19049266-4BA0-4FDF-B277-5CADBB5377A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAFC.Scheduler", "EAFC.Scheduler\EAFC.Scheduler.csproj", "{789D69FA-5F26-41F9-938E-C11189B9DD15}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAFC.Jobs", "EAFC.Jobs\EAFC.Jobs.csproj", "{FC52183F-DF26-4BC4-8FA2-EC84DE7D2506}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +53,10 @@ Global
 		{19049266-4BA0-4FDF-B277-5CADBB5377A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19049266-4BA0-4FDF-B277-5CADBB5377A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19049266-4BA0-4FDF-B277-5CADBB5377A6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{789D69FA-5F26-41F9-938E-C11189B9DD15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{789D69FA-5F26-41F9-938E-C11189B9DD15}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{789D69FA-5F26-41F9-938E-C11189B9DD15}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{789D69FA-5F26-41F9-938E-C11189B9DD15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC52183F-DF26-4BC4-8FA2-EC84DE7D2506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC52183F-DF26-4BC4-8FA2-EC84DE7D2506}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC52183F-DF26-4BC4-8FA2-EC84DE7D2506}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC52183F-DF26-4BC4-8FA2-EC84DE7D2506}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

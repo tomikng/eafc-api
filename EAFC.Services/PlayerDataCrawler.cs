@@ -16,6 +16,7 @@ namespace EAFC.Services
         {
             var allPlayers = new List<Player>();
             await FetchPlayersRecursively(_dataUrl, allPlayers);
+            Console.WriteLine("Fetched all players. Adding to database.");
             await playerService.AddPlayersAsync(allPlayers);
         }
         
