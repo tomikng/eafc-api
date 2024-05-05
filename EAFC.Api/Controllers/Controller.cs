@@ -17,7 +17,7 @@ namespace EAFC.Api.Controllers
         [HttpGet("crawl")]
         public async Task<IActionResult> GetNewPlayers()
         {
-            var players = await _crawler.FetchNewPlayersFromHtmlAsync();
+            var players = await _crawler.FetchAllPlayersAsync();
             return Ok(players);
         }
         
