@@ -17,6 +17,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EAFC.Data\EAFC.Data.csproj" />
+      <ProjectReference Include="..\EAFC.DiscordBot\EAFC.DiscordBot.csproj" />
+      <ProjectReference Include="..\EAFC.Notifications\EAFC.Notifications.csproj" />
       <ProjectReference Include="..\EAFC.Services\EAFC.Services.csproj" />
     </ItemGroup>
 

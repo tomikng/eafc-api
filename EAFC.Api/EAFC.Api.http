@@ -3,7 +3,9 @@
 GET {{EAFC.Api_HostAddress}}/Players/crawl
 Accept: application/json
 
-GET {{EAFC.Api_HostAddress}}/Players/
+###
+
+GET {{EAFC.Api_HostAddress}}/Players/latest
 Accept: application/json
 
 ###
