@@ -7,6 +7,11 @@ namespace EAFC.Services;
 
 public class PlayerService(ApplicationDbContext context) : IPlayerService
 {
+    public async Task<DateTime?> GetLatestAddedOnDateAsync()
+    {
+        return await context.Players.MaxAsync(p => (DateTime?)p.AddedOn);
+    }
+    
     public async Task<Pagination<Player>> GetLatestPlayersAsync(int page = 1, int pageSize = 100)
     {
         var count = await context.Players.CountAsync();

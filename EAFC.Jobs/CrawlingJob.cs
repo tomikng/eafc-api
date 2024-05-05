@@ -12,12 +12,11 @@ public class CrawlingJob(PlayerDataCrawler crawler, INotificationService notific
         
         try
         {
-            await crawler.FetchAllPlayersAsync();
-            await notificationService.SendAsync("Crawling completed and data updated.");
+            var players = await crawler.FetchNewlyAddedPlayersAsync();
+            await notificationService.SendAsync(players);
         }
         catch (Exception ex)
         {
-            await notificationService.SendAsync($"Error during crawling: {ex.Message}");
             Console.WriteLine($"Job execution failed: {ex}");
         }
     }

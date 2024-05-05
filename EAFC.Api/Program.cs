@@ -25,11 +25,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(jobKey) // Links this trigger to the CrawlingJob
         .WithIdentity("CrawlingJobTrigger") // Give the trigger a unique name
-        // .WithCronSchedule("0 5 7 * * ?"));
-        .StartNow() // start immediately
-        .WithSimpleSchedule(x => x
-            .WithIntervalInSeconds(250) // set the interval to 10 seconds
-            .RepeatForever())); 
+        .WithCronSchedule("0 5 7 * * ?"));
 });
 
 // Register Quartz as a hosted service

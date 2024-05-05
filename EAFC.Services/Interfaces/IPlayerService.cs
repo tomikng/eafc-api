@@ -8,4 +8,6 @@ public interface IPlayerService
     Task<Pagination<Player>> GetLatestPlayersByLatestAddOnAsync(int page = 1, int pageSize = 100);
     Task AddPlayersAsync(IEnumerable<Player> players);
     
+    Task<DateTime?> GetLatestAddedOnDateAsync();
+    
 }

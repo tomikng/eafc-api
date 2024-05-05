@@ -19,7 +19,7 @@ namespace EAFC.Services
             Console.WriteLine("Fetched all players. Adding to database.");
             await playerService.AddPlayersAsync(allPlayers);
         }
-        
+
         private async Task FetchPlayersRecursively(string url, List<Player> allPlayers)
         {
             var doc = await _web.LoadFromWebAsync(url);
@@ -83,6 +83,32 @@ namespace EAFC.Services
 
             return players;
         }
-        
+
+        public async Task<List<Player>> FetchNewlyAddedPlayersAsync()
+        {
+            // Fetch all players from the external source
+            var allPlayers = new List<Player>();
+            await FetchPlayersRecursively(_dataUrl, allPlayers);
+
+            if (allPlayers.Count == 0)
+            {
+                Console.WriteLine("No players were fetched.");
+                return [];
+            }
+
+            var latestDateInDb = await playerService.GetLatestAddedOnDateAsync() ?? DateTime.MinValue;
+
+            var newPlayers = allPlayers.Where(p => p.AddedOn > latestDateInDb).ToList();
+
+            if (newPlayers.Count != 0)
+            {
+                await playerService.AddPlayersAsync(newPlayers);
+                return newPlayers;
+            }
+            else
+            {
+                return [];
+            }
+        }
     }
 }

@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\EAFC.Core\EAFC.Core.csproj" />
+    </ItemGroup>
+
 </Project>

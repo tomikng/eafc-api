@@ -72,7 +72,7 @@ public class DiscordNotificationService : INotificationService
             {
                 case "latest":
                     var result = await playerService.GetLatestPlayersByLatestAddOnAsync();
-                    var responseLatest = FormatPlayers(result);
+                    var responseLatest = FormatPlayers(result.Items);
                     await command.FollowupAsync(responseLatest);
                     break;
                 default:
@@ -88,14 +88,14 @@ public class DiscordNotificationService : INotificationService
     }
 
 
-    private string FormatPlayers(Pagination<Player> players)
+    private string FormatPlayers(List<Player> players)
     {
-        if (players.Items.Count == 0)
-            return "No players found.";
+        if (players.Count == 0)
+            return "No new players found.";
 
         var builder = new StringBuilder();
         builder.AppendLine("Latest Players:");
-        foreach (var player in players.Items)
+        foreach (var player in players)
         {
             builder.AppendLine($"**Name:** {player.Name}");
             builder.AppendLine($"**Rating:** {player.Rating}");
@@ -104,15 +104,22 @@ public class DiscordNotificationService : INotificationService
             builder.AppendLine($"**Profile URL:** [Link]({player.ProfileUrl})");
             builder.AppendLine();
         }
+
         return builder.ToString();
     }
     
-    public async Task SendAsync(string message)
+    public async Task SendAsync(List<Player> players)
     {
         const ulong channelId = 1236627776577077308; // Replace dynamically in config file
         if (await _client.GetChannelAsync(channelId) is IMessageChannel channel)
         {
+            var message = FormatPlayers(players);
             await channel.SendMessageAsync(message);
         }
+        else
+        {
+            await Console.Error.WriteLineAsync("Failed to find specified Discord channel.");
+        }
     }
+
 }
