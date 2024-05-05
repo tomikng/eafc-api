@@ -1,26 +1,24 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Configuration;
 using EAFC.Core.Models;
+using EAFC.Services.Interfaces;
 
 namespace EAFC.Services
 {
-    public class PlayerDataCrawler(IConfiguration configuration)
+    public class PlayerDataCrawler(IConfiguration configuration, IPlayerService playerService)
     {
-        private readonly string _dataUrl = configuration["CrawlerSettings:PlayerDataURL"]!;
         private readonly HtmlWeb _web = new();
+        private readonly string _dataUrl = configuration["CrawlerSettings:PlayerDataURL"]!;
 
-        public async Task<List<Player>> FetchAllPlayersAsync()
+
+        public async Task FetchAllPlayersAsync()
         {
             var allPlayers = new List<Player>();
             await FetchPlayersRecursively(_dataUrl, allPlayers);
-            return allPlayers;
+            await playerService.AddPlayersAsync(allPlayers);
         }
-
+        
         private async Task FetchPlayersRecursively(string url, List<Player> allPlayers)
         {
             var doc = await _web.LoadFromWebAsync(url);
@@ -38,7 +36,7 @@ namespace EAFC.Services
                 }
                 else
                 {
-                    Console.Error.WriteLine("Detected a loop in pagination, stopping recursion.");
+                    await Console.Error.WriteLineAsync("Detected a loop in pagination, stopping recursion.");
                 }
             }
         }
@@ -84,5 +82,6 @@ namespace EAFC.Services
 
             return players;
         }
+        
     }
 }

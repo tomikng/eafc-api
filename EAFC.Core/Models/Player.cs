@@ -1,8 +1,11 @@
-﻿namespace EAFC.Core.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EAFC.Core.Models
 {
     public class Player
     {
-        // public int Id { get; set; }
+        [Key]
+        public int Id { get; set; }
         public string Name { get; set; }
         // public string Team { get; set; }
         // public Dictionary<string, int> Stats { get; set; }
