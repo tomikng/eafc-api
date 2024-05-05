@@ -16,10 +16,10 @@ namespace EAFC.Api.Controllers
         }
         
         [HttpGet("latest-players")]
-        public async Task<IActionResult> GetPlayers()
+        public async Task<IActionResult> GetPlayers(int page = 1, int pageSize = 100)
         {
-            var players = await playerService.GetLatestPlayersAsync();
-            return Ok(players);
+            var result = await playerService.GetLatestPlayersAsync(page, pageSize);
+            return Ok(result);
         }
     }
 }

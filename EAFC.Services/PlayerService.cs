@@ -3,11 +3,20 @@ using EAFC.Data;
 using EAFC.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
+namespace EAFC.Services;
+
 public class PlayerService(ApplicationDbContext context) : IPlayerService
 {
-    public async Task<List<Player>> GetLatestPlayersAsync()
+    public async Task<Pagination<Player>> GetLatestPlayersAsync(int page = 1, int pageSize = 100)
     {
-        return await context.Players.OrderByDescending(p => p.AddedOn).Take(10).ToListAsync();
+        var count = await context.Players.CountAsync();
+        var items = await context.Players
+            .OrderByDescending(p => p.AddedOn)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new Pagination<Player>(items, count, page, pageSize);
     }
 
     public async Task AddPlayersAsync(IEnumerable<Player> players)
