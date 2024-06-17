@@ -21,7 +21,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(jobKey) 
         .WithIdentity("CrawlingJobTrigger")
-        .WithCronSchedule("0 5 19 * * ?"));
+        .WithCronSchedule("0 42 17 * * ?"));
 });
 
 builder.Services.AddQuartzHostedService(q =>
