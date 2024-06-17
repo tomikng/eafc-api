@@ -9,16 +9,7 @@ namespace EAFC.Services
     public class PlayerDataCrawler(IConfiguration configuration, IPlayerService playerService)
     {
         private readonly HtmlWeb _web = new();
-        private readonly string _dataUrl = configuration["CrawlerSettings:PlayerDataURL"]!;
-
-
-        public async Task FetchAllPlayersAsync()
-        {
-            var allPlayers = new List<Player>();
-            await FetchPlayersRecursively(_dataUrl, allPlayers);
-            Console.WriteLine("Fetched all players. Adding to database.");
-            await playerService.AddPlayersAsync(allPlayers);
-        }
+        private readonly string _dataUrl = configuration["CrawlerSettings:PlayerDataURL"] ?? throw new InvalidDataException();
 
         private async Task FetchPlayersRecursively(string url, List<Player> allPlayers)
         {
@@ -45,14 +36,14 @@ namespace EAFC.Services
         private List<Player> ExtractPlayersFromPage(HtmlDocument doc)
         {
             var players = new List<Player>();
-            var table = doc.DocumentNode.SelectSingleNode("//table[@class='table table-new-players']");
-            if (table == null)
+            var tableBody = doc.DocumentNode.SelectSingleNode("//tbody[@class='with-border with-background']");
+            if (tableBody == null)
             {
-                Console.Error.WriteLine("No players table found on the page.");
+                Console.Error.WriteLine("No players table body found on the page.");
                 return players;
             }
 
-            var rows = table.SelectNodes(".//tr[starts-with(@class, 'player_tr')]");
+            var rows = tableBody.SelectNodes(".//tr[@class='player-row']");
             if (rows == null)
             {
                 Console.Error.WriteLine("No player rows found in the table.");
@@ -61,21 +52,21 @@ namespace EAFC.Services
 
             foreach (var row in rows)
             {
-                var profileLinkNode = row.SelectSingleNode(".//a[@class='player_name_players_table']");
-                if (profileLinkNode == null)
+                var nameNode = row.SelectSingleNode(".//a[@class='table-player-name']");
+                if (nameNode == null)
                 {
-                    Console.Error.WriteLine("Player name link not found.");
-                    continue; // Skip this player if name link is missing
+                    Console.Error.WriteLine("Player name not found.");
+                    continue; // Skip this player if name is missing
                 }
 
                 var player = new Player
                 {
-                    Name = profileLinkNode.InnerText.Trim(),
-                    Rating = Convert.ToInt32(row.SelectSingleNode(".//td[2]/span")?.InnerText.Trim()),
-                    Position = row.SelectSingleNode(".//td[3]")?.InnerText.Trim() ?? string.Empty,
-                    AddedOn = DateTime.ParseExact(row.SelectSingleNode(".//td[8]")?.InnerText.Trim() ?? string.Empty,
+                    Name = nameNode.InnerText.Trim(),
+                    Rating = Convert.ToInt32(row.SelectSingleNode(".//div[@class='rating-square round-corner-small']")?.InnerText.Trim()),
+                    Position = row.SelectSingleNode(".//td[@class='table-pos']")?.InnerText.Trim() ?? string.Empty,
+                    AddedOn = DateTime.ParseExact(row.SelectSingleNode(".//td[@class='table-added-on']")?.InnerText.Trim() ?? string.Empty,
                         "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                    ProfileUrl = configuration["BaseUrl"] + profileLinkNode.GetAttributeValue("href", string.Empty)
+                    ProfileUrl = configuration["BaseUrl"] + nameNode.GetAttributeValue("href", string.Empty)
                 };
 
                 players.Add(player);

@@ -29,7 +29,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("CrawlingJobTrigger")
-        .WithCronSchedule(builder.Configuration["CronExpression"]));
+        .WithCronSchedule(builder.Configuration["CronExpression"] ?? throw new InvalidDataException()));
 });
 
 builder.Services.AddQuartzHostedService(q =>
