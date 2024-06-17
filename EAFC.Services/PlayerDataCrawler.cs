@@ -6,7 +6,7 @@ using EAFC.Services.Interfaces;
 
 namespace EAFC.Services
 {
-    public class PlayerDataCrawler(IConfiguration configuration, IPlayerService playerService)
+    public class PlayerDataCrawler(IConfiguration configuration, IPlayerService playerService) : IPlayerDataCrawler
     {
         private readonly HtmlWeb _web = new();
         private readonly string _dataUrl = configuration["CrawlerSettings:PlayerDataURL"] ?? throw new InvalidDataException();

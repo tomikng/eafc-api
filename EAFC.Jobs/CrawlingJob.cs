@@ -1,10 +1,10 @@
 using EAFC.Notifications;
-using EAFC.Services;
+using EAFC.Services.Interfaces;
 using Quartz;
 
 namespace EAFC.Jobs;
 
-public class CrawlingJob(PlayerDataCrawler crawler, INotificationService notificationService)
+public class CrawlingJob(IPlayerDataCrawler crawler, INotificationService notificationService)
     : IJob
 {
     public async Task Execute(IJobExecutionContext context)
