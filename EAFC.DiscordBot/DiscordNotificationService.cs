@@ -91,33 +91,85 @@ public class DiscordNotificationService : INotificationService
         }
     }
 
+    private void AppendPlayerDetails(StringBuilder builder, Player player)
+    {
+        builder.AppendLine($"**Name:** {player.Name}");
+        builder.AppendLine($"**Rating:** {player.Rating}");
+        builder.AppendLine($"**Position:** {player.Position}");
+        builder.AppendLine($"**Added On:** {player.AddedOn:yyyy-MM-dd}");
+        builder.AppendLine($"**Profile URL:** [Link]({player.ProfileUrl})");
+        builder.AppendLine();
+    }
+
     private string? FormatPlayers(List<Player> players)
     {
         if (players.Count == 0)
-            // return "No new players found.";
-            return null;
+            return "No new players found.";
 
         var builder = new StringBuilder();
         builder.AppendLine("Latest Players:");
         foreach (var player in players)
         {
-            builder.AppendLine($"**Name:** {player.Name}");
-            builder.AppendLine($"**Rating:** {player.Rating}");
-            builder.AppendLine($"**Position:** {player.Position}");
-            builder.AppendLine($"**Added On:** {player.AddedOn:yyyy-MM-dd}");
-            builder.AppendLine($"**Profile URL:** [Link]({player.ProfileUrl})");
-            builder.AppendLine();
+            AppendPlayerDetails(builder, player);
         }
 
         return builder.ToString();
     }
-    
-    public async Task SendAsync(List<Player> players)
+
+    private string? FormatPlayer(Player player)
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine("Player Details:");
+        AppendPlayerDetails(builder, player);
+
+        return builder.ToString();
+    }
+
+    public async Task SendNotificationAsync(List<Player> players)
+    {
+        var message = FormatPlayers(players);
+        await SendMessageAsync(message);
+    }
+
+    public async Task SendNotificationAsync(Player player)
+    {
+        var message = FormatPlayer(player);
+        await SendMessageAsync(message);
+    }
+
+    public async Task SendErrorNotificationAsync(string errorMessage)
+    {
+        var message = $"Error: {errorMessage}";
+        await SendMessageAsync(message);
+    }
+
+    public async Task SendWarningNotificationAsync(string warningMessage)
+    {
+        var message = $"Warning: {warningMessage}";
+        await SendMessageAsync(message);
+    }
+
+    public async Task SendInfoNotificationAsync(string infoMessage)
+    {
+        var message = $"Info: {infoMessage}";
+        await SendMessageAsync(message);
+    }
+
+    public async Task SendCustomNotificationAsync(string customMessage)
+    {
+        await SendMessageAsync(customMessage);
+    }
+
+    public async Task SendNotificationAsync(string message)
+    {
+        await SendMessageAsync(message);
+    }
+
+    private async Task SendMessageAsync(string? message)
     {
         if (await _client.GetChannelAsync(_channelId) is IMessageChannel channel)
         {
-            var message = FormatPlayers(players);
-            if(message != null)
+            if (message != null)
                 await channel.SendMessageAsync(message);
         }
         else

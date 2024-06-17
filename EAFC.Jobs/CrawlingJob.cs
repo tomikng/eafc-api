@@ -1,5 +1,5 @@
-using EAFC.Services;
 using EAFC.Notifications;
+using EAFC.Services;
 using Quartz;
 
 namespace EAFC.Jobs;
@@ -9,15 +9,22 @@ public class CrawlingJob(PlayerDataCrawler crawler, INotificationService notific
 {
     public async Task Execute(IJobExecutionContext context)
     {
-        
         try
         {
             var players = await crawler.FetchNewlyAddedPlayersAsync();
-            await notificationService.SendAsync(players);
+
+            if (players.Count > 0)
+            {
+                await notificationService.SendNotificationAsync(players);
+            }
+            else
+            {
+                await notificationService.SendInfoNotificationAsync("No new players found.");
+            }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Job execution failed: {ex}");
+            await notificationService.SendErrorNotificationAsync($"Job execution failed: {ex}");
         }
     }
 }
