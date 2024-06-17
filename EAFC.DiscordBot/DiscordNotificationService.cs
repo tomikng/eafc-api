@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using EAFC.Core.Models;
 using EAFC.Notifications;
 using EAFC.Services.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EAFC.DiscordBot;
@@ -13,14 +14,18 @@ public class DiscordNotificationService : INotificationService
     private readonly DiscordSocketClient _client;
     private readonly string _token;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ulong _guildId;
+    private readonly ulong _channelId;
 
-    public DiscordNotificationService(string token, IServiceProvider serviceProvider)
+    public DiscordNotificationService(string token, IServiceProvider serviceProvider, IConfiguration configuration)
     {
         _client = new DiscordSocketClient();
         _client.Log += LogAsync;
         _client.SlashCommandExecuted += SlashCommandHandler;
         _token = token;
         _serviceProvider = serviceProvider;
+        _guildId = ulong.Parse(configuration["DiscordGuildId"] ?? throw new InvalidDataException());
+        _channelId = ulong.Parse(configuration["DiscordChannelId"] ?? throw new InvalidDataException());
     }
 
     public async Task InitializeAsync()
@@ -35,8 +40,7 @@ public class DiscordNotificationService : INotificationService
 
     private async Task RegisterCommandsAsync()
     {
-        ulong guildId = 688682700143722537; // replace dynamically in config file
-        var guild = _client.GetGuild(guildId);
+        var guild = _client.GetGuild(_guildId);
 
         var latestCommand = new SlashCommandBuilder()
             .WithName("latest")
@@ -87,7 +91,6 @@ public class DiscordNotificationService : INotificationService
         }
     }
 
-
     private string? FormatPlayers(List<Player> players)
     {
         if (players.Count == 0)
@@ -111,8 +114,7 @@ public class DiscordNotificationService : INotificationService
     
     public async Task SendAsync(List<Player> players)
     {
-        const ulong channelId = 1236627776577077308; // Replace dynamically in config file
-        if (await _client.GetChannelAsync(channelId) is IMessageChannel channel)
+        if (await _client.GetChannelAsync(_channelId) is IMessageChannel channel)
         {
             var message = FormatPlayers(players);
             if(message != null)
@@ -123,5 +125,4 @@ public class DiscordNotificationService : INotificationService
             await Console.Error.WriteLineAsync("Failed to find specified Discord channel.");
         }
     }
-
 }

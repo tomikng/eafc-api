@@ -33,4 +33,11 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+        <None Update="..\..\..\..\EAFC.Configurator\config.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>config.json</Link>
+        </None>
+    </ItemGroup>
+
 </Project>

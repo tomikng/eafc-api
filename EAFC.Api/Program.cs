@@ -10,7 +10,15 @@ using Quartz.Spi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IPlayerService, PlayerService>(); 
+var configFilePath = Path.Combine(AppContext.BaseDirectory, "config.json");
+if (configFilePath.Contains("EAFC.Api"))
+{
+    configFilePath = configFilePath.Replace("EAFC.Api", "EAFC.Configurator");
+}
+
+builder.Configuration.AddJsonFile(configFilePath, optional: false, reloadOnChange: true);
+
+builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<PlayerDataCrawler>();
 
 builder.Services.AddQuartz(q =>
@@ -19,9 +27,9 @@ builder.Services.AddQuartz(q =>
     q.AddJob<CrawlingJob>(opts => opts.WithIdentity(jobKey));
 
     q.AddTrigger(opts => opts
-        .ForJob(jobKey) 
+        .ForJob(jobKey)
         .WithIdentity("CrawlingJobTrigger")
-        .WithCronSchedule("0 42 17 * * ?"));
+        .WithCronSchedule(builder.Configuration["CronExpression"]));
 });
 
 builder.Services.AddQuartzHostedService(q =>
@@ -31,7 +39,9 @@ builder.Services.AddQuartzHostedService(q =>
 
 builder.Services.AddSingleton<INotificationService, DiscordNotificationService>(provider => new DiscordNotificationService(
     builder.Configuration["DiscordBotToken"] ?? throw new InvalidOperationException(),
-    provider));
+    provider,
+    builder.Configuration));
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
