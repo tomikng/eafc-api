@@ -1,6 +1,6 @@
 using EAFC.Core.Models;
 
-namespace EAFC.Notifications;
+namespace EAFC.Notifications.interfaces;
 
 public interface INotificationService
 {

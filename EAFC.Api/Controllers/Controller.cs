@@ -1,4 +1,5 @@
 using EAFC.Notifications;
+using EAFC.Notifications.interfaces;
 using Microsoft.AspNetCore.Mvc;
 using EAFC.Services;
 using EAFC.Services.Interfaces;

@@ -1,4 +1,5 @@
 using EAFC.Notifications;
+using EAFC.Notifications.interfaces;
 using EAFC.Services.Interfaces;
 using Quartz;
 

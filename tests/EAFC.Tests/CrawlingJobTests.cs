@@ -1,6 +1,7 @@
 using EAFC.Core.Models;
 using EAFC.Jobs;
 using EAFC.Notifications;
+using EAFC.Notifications.interfaces;
 using EAFC.Services.Interfaces;
 using Moq;
 using Quartz;
