@@ -3,9 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Windows.Input;
-using EAFC.Configurator.Models;
 using ReactiveUI;
 using IPlatformSettings = EAFC.Configurator.Models.IPlatformSettings;
 
@@ -62,15 +60,7 @@ namespace EAFC.Configurator.ViewModels
                     {
                         using (var writer = new Utf8JsonWriter(stream))
                         {
-                            writer.WriteStartObject();
-                            writer.WriteString("PlatformName", ps.PlatformName);
-                            // Write each platform-specific setting
-                            if (ps is DiscordSettings discordSettings)
-                            {
-                                writer.WriteString("GuildId", discordSettings.GuildId);
-                                writer.WriteString("ChannelId", discordSettings.ChannelId);
-                            }
-                            writer.WriteEndObject();
+                            ps.SaveSettings(writer);
                         }
                         return JsonDocument.Parse(stream.ToArray()).RootElement.Clone();
                     }

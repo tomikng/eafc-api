@@ -1,10 +1,11 @@
 using System.Text.Json;
 
-namespace EAFC.Configurator.Models;
-
-public interface IPlatformSettings
+namespace EAFC.Configurator.Models
 {
-    string PlatformName { get; }
-    void SaveSettings(Utf8JsonWriter jsonWriter);
-    void LoadSettings(JsonElement settingsElement);
+    public interface IPlatformSettings
+    {
+        string PlatformName { get; }
+        void SaveSettings(Utf8JsonWriter jsonWriter);
+        void LoadSettings(JsonElement settingsElement);
+    }
 }
