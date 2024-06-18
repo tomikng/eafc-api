@@ -2,7 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="EAFC.Configurator.App"
              xmlns:local="using:EAFC.Configurator"
-             xmlns:convertors="clr-namespace:EAFC.Configurator.Convertors"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
@@ -14,7 +13,4 @@
         <FluentTheme />
     </Application.Styles>
              
-     <Application.Resources>
-         <convertors:BooleanInverterConverter x:Key="BooleanInverterConverter"/>
-     </Application.Resources>
 </Application>
