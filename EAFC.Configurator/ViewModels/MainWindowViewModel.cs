@@ -1,19 +1,24 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Windows.Input;
-using System.Threading.Tasks;
+using EAFC.Configurator.Models;
 using ReactiveUI;
+using IPlatformSettings = EAFC.Configurator.Models.IPlatformSettings;
 
 namespace EAFC.Configurator.ViewModels
 {
     public class MainWindowViewModel : ReactiveObject
     {
         private readonly string _configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+        private readonly PlatformSettingsFactory _platformSettingsFactory;
+
+        public ObservableCollection<IPlatformSettings> PlatformSettings { get; }
 
         private bool _enableNotifications;
-
         public bool EnableNotifications
         {
             get => _enableNotifications;
@@ -21,31 +26,13 @@ namespace EAFC.Configurator.ViewModels
         }
 
         private string _allowedPlatforms;
-
         public string AllowedPlatforms
         {
             get => _allowedPlatforms;
             set => this.RaiseAndSetIfChanged(ref _allowedPlatforms, value);
         }
 
-        private string? _discordGuildId;
-
-        public string? DiscordGuildId
-        {
-            get => _discordGuildId;
-            set => this.RaiseAndSetIfChanged(ref _discordGuildId, value);
-        }
-
-        private string? _discordChannelId;
-
-        public string? DiscordChannelId
-        {
-            get => _discordChannelId;
-            set => this.RaiseAndSetIfChanged(ref _discordChannelId, value);
-        }
-
         private string? _cronExpression;
-
         public string? CronExpression
         {
             get => _cronExpression;
@@ -56,6 +43,8 @@ namespace EAFC.Configurator.ViewModels
 
         public MainWindowViewModel()
         {
+            _platformSettingsFactory = new PlatformSettingsFactory();
+            PlatformSettings = new ObservableCollection<IPlatformSettings>(_platformSettingsFactory.GetAllPlatformSettings());
             SaveCommand = ReactiveCommand.Create(SaveConfiguration);
             LoadConfiguration();
         }
@@ -66,9 +55,26 @@ namespace EAFC.Configurator.ViewModels
             {
                 EnableNotifications,
                 AllowedPlatforms = AllowedPlatforms.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries),
-                DiscordGuildId,
-                DiscordChannelId,
-                CronExpression
+                CronExpression,
+                PlatformSettings = PlatformSettings.Select(ps =>
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        using (var writer = new Utf8JsonWriter(stream))
+                        {
+                            writer.WriteStartObject();
+                            writer.WriteString("PlatformName", ps.PlatformName);
+                            // Write each platform-specific setting
+                            if (ps is DiscordSettings discordSettings)
+                            {
+                                writer.WriteString("GuildId", discordSettings.GuildId);
+                                writer.WriteString("ChannelId", discordSettings.ChannelId);
+                            }
+                            writer.WriteEndObject();
+                        }
+                        return JsonDocument.Parse(stream.ToArray()).RootElement.Clone();
+                    }
+                }).ToArray()
             };
 
             var configJson = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
@@ -82,29 +88,30 @@ namespace EAFC.Configurator.ViewModels
             if (File.Exists(_configFilePath))
             {
                 var configJson = File.ReadAllText(_configFilePath);
-                var config = JsonSerializer.Deserialize<Config>(configJson);
+                var configElement = JsonDocument.Parse(configJson).RootElement;
 
-                if (config != null)
+                if (configElement.TryGetProperty("EnableNotifications", out var enableNotificationsElement))
                 {
-                    EnableNotifications = config.EnableNotifications;
-                    AllowedPlatforms = string.Join(",", config.AllowedPlatforms);
-                    DiscordGuildId = config.DiscordGuildId;
-                    DiscordChannelId = config.DiscordChannelId;
-                    CronExpression = config.CronExpression;
+                    EnableNotifications = enableNotificationsElement.GetBoolean();
+                }
+
+                if (configElement.TryGetProperty("AllowedPlatforms", out var allowedPlatformsElement))
+                {
+                    AllowedPlatforms = string.Join(",", allowedPlatformsElement.EnumerateArray().Select(x => x.GetString()));
+                }
+
+                if (configElement.TryGetProperty("CronExpression", out var cronExpressionElement))
+                {
+                    CronExpression = cronExpressionElement.GetString();
+                }
+
+                foreach (var platformSettings in PlatformSettings)
+                {
+                    platformSettings.LoadSettings(configElement);
                 }
 
                 Console.WriteLine("Configuration Loaded.");
             }
         }
-
-        private class Config
-        {
-            public bool EnableNotifications { get; set; }
-            public string[] AllowedPlatforms { get; set; } = Array.Empty<string>();
-            public string? DiscordGuildId { get; set; }
-            public string? DiscordChannelId { get; set; }
-            public string? CronExpression { get; set; }
-        }
-
     }
 }

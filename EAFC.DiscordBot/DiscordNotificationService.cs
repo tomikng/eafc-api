@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using Discord;
 using Discord.WebSocket;
 using EAFC.Core.Models;
@@ -23,10 +24,34 @@ public class DiscordNotificationService : INotificationService, IInitializable
         _client = new DiscordSocketClient();
         _client.Log += LogAsync;
         _client.SlashCommandExecuted += SlashCommandHandler;
+
         _token = configuration["DiscordBotToken"] ?? throw new InvalidOperationException("DiscordBotToken is not configured.");
         _serviceProvider = serviceProvider;
-        _guildId = ulong.Parse(configuration["DiscordGuildId"] ?? throw new InvalidDataException("DiscordGuildId is not configured."));
-        _channelId = ulong.Parse(configuration["DiscordChannelId"] ?? throw new InvalidDataException("DiscordChannelId is not configured."));
+
+        var platformSettingsSection = configuration.GetSection("PlatformSettings");
+        if (!platformSettingsSection.Exists())
+        {
+            throw new InvalidOperationException("PlatformSettings section is not configured.");
+        }
+
+        bool discordSettingsFound = false;
+
+        foreach (var platformSetting in platformSettingsSection.GetChildren())
+        {
+            var platformName = platformSetting.GetValue<string>("PlatformName");
+            if (platformName == "Discord")
+            {
+                _guildId = platformSetting.GetValue<ulong>("GuildId");
+                _channelId = platformSetting.GetValue<ulong>("ChannelId");
+                discordSettingsFound = true;
+                break;
+            }
+        }
+
+        if (!discordSettingsFound)
+        {
+            throw new InvalidOperationException("Discord settings are not configured in PlatformSettings.");
+        }
     }
 
     public async Task InitializeAsync()
