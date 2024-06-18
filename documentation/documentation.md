@@ -28,13 +28,13 @@ For the first time you need to fill the values in the configuration UI.
 #### In general
 Please configure the fields shown in configuration:
 - Platforms: The platforms that you want to scrape the players from.
-    - Currently, the project supports these platforms for sending notifications:
-        - Discord
-    - For adding a new platform it will be described in the `Programmer documentation section.`
+  - Currently, the project supports these platforms for sending notifications:
+    - Discord
+  - For adding a new platform it will be described in the `Programmer documentation section.` 
 - Fill the `cron` value
-    - The cron value is the time that the scraper will run to scrape the players from the platforms.
-    - The recommended value is `0 5 19 * * ?` which means the scraper will run at 19:05 every day.
-    - You can change the value to your desired time.
+  - The cron value is the time that the scraper will run to scrape the players from the platforms.
+  - The recommended value is `0 5 19 * * ?` which means the scraper will run at 19:05 every day.
+  - You can change the value to your desired time.
 #### Discord
 Please configure the fields shown in configuration:
 - `discordGuildId`: The ID of the Discord guild that you want to send the notifications to.
@@ -73,7 +73,7 @@ The solution is divided into 9 projects:
 - `EAFC.DiscordBot`: The project that contains the Discord bot for the project, which implements the notification sender.
 - `EAFC.Notification`: The project that contains the common logic and factory logic for notifications.
 - `EAFC.Services`: The project that contains the services of the project, mainly scraper logic and Player service logic
-  for retrieving and saving players.
+for retrieving and saving players.
 - `EAFC.Tests`: The project that contains the tests for the project.
 
 ### EAFC.API
@@ -85,7 +85,7 @@ This project contains the API for the project. The main items that are in this p
 Except for `Program.cs`, the rest of the main files are self-explanatory.
 
 ### Program.cs
-This file is designed to handle various functionalities related to the EAFC system, including **data crawling**,
+This file is designed to handle various functionalities related to the EAFC system, including **data crawling**, 
 **player services**, and **notifications** through a factory builder. This documentation describes the initialization and configuration of the application services and middleware.
 #### Configuration and initialization
 Initialization and configuration is seperated into several steps bellow:
@@ -105,8 +105,8 @@ Initialization and configuration is seperated into several steps bellow:
    
    builder.Configuration.AddJsonFile(configFilePath, optional: false, reloadOnChange: true);
    ```
-   The `AddJsonFile` method adds the configuration file to the builder. The configuration file is used to configure the
-   services and the middleware for the application.
+    The `AddJsonFile` method adds the configuration file to the builder. The configuration file is used to configure the
+services and the middleware for the application.
 3. **Dependency injection**
    ```csharp
    builder.Services.AddScoped<IPlayerService, PlayerService>();
@@ -133,7 +133,7 @@ Initialization and configuration is seperated into several steps bellow:
    });
    ```
    Configures Quartz for job scheduling. It sets up a job (CrawlingJob) with a trigger that uses a cron expression from
-   the configuration file. It also ensures that the hosted service waits for jobs to complete before shutting down.
+the configuration file. It also ensures that the hosted service waits for jobs to complete before shutting down.
 5. **Notification Service Factory and Initialization**
     ```csharp
     builder.Services.AddSingleton<INotificationServiceFactory, NotificationServiceFactory>();
@@ -144,14 +144,14 @@ Initialization and configuration is seperated into several steps bellow:
    return factory.CreateNotificationService(provider, configuration) ?? throw new InvalidOperationException();
    });
     ```
-   Registers the NotificationServiceFactory as a singleton and uses it to create an instance of INotificationService.
-   This allows for more flexible creation and configuration of notification services.
+   Registers the NotificationServiceFactory as a singleton and uses it to create an instance of INotificationService. 
+This allows for more flexible creation and configuration of notification services.
 6. Database
     ```csharp
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
     ```
-   Configures the database context to use a PostgreSQL connection string from the configuration file.
+    Configures the database context to use a PostgreSQL connection string from the configuration file.
 
 ### EAFC.Configuration
 This project contains the configuration UI for the project. The main parts of the projects are:
@@ -181,8 +181,8 @@ public interface IPlatformSettings
 ```
 
 #### PlatformSettingsFactory
-The PlatformSettingsFactory class is responsible for managing and providing instances of platform-specific settings.
-It acts as a registry and factory for IPlatformSettings implementations, allowing for the dynamic retrieval and
+The PlatformSettingsFactory class is responsible for managing and providing instances of platform-specific settings. 
+It acts as a registry and factory for IPlatformSettings implementations, allowing for the dynamic retrieval and 
 management of various platform settings.
 
 It maintains a dictionary of registered platform settings, indexed by their platform names.
@@ -327,13 +327,13 @@ To add a new platform setting, you need to follow these steps:
 ### EAFC.Core
 This project defines the core models and interfaces used throughout the project. The main classes and interfaces are:
 - `Player`
-- `Pagination`: The Pagination<T> class is a generic utility for managing paginated data. It provides properties to
-  access the current page, page size, total count, and total pages. The class also includes a method to check if any
-  items on the current page satisfy a specified condition. This utility class simplifies the handling of paginated data
-  in applications.
+- `Pagination`: The Pagination<T> class is a generic utility for managing paginated data. It provides properties to 
+access the current page, page size, total count, and total pages. The class also includes a method to check if any 
+items on the current page satisfy a specified condition. This utility class simplifies the handling of paginated data
+in applications.
 
 #### Player
-The `Player` class represents a player in the EAFC system. It includes basic details about the player such as their ID,
+The `Player` class represents a player in the EAFC system. It includes basic details about the player such as their ID, 
 name, rating, position, profile URL, and the date they were added.
 
 #### Attributes:
@@ -851,8 +851,8 @@ The `NotificationServiceFactory` class is responsible for creating instances of 
       var factory = new NotificationServiceFactory();
       var notificationService = factory.CreateNotificationService(serviceProvider, configuration);
       ```
-    - Note that in order to the factory to find the correct notification service, it has to be in this format
-      `EAFC.{platform}Bot.{platform}NotificationService`
+    - Note that in order to the factory to find the correct notification service, it has to be in this format 
+  `EAFC.{platform}Bot.{platform}NotificationService` 
 #### Example Usage
 
 Here’s an example of how to use the `NotificationServiceFactory` class:
