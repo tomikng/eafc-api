@@ -12,6 +12,8 @@
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
         <PackageReference Include="Discord.Net.WebSocket" Version="3.14.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0-preview.5.24306.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0-preview.5.24306.3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
         <PackageReference Include="Moq" Version="4.20.70" />
         <PackageReference Include="NUnit" Version="3.14.0"/>
@@ -29,5 +31,12 @@
       <ProjectReference Include="..\..\EAFC.Jobs\EAFC.Jobs.csproj" />
       <ProjectReference Include="..\..\EAFC.Services\EAFC.Services.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+        <None Update="test_data.html">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
 
 </Project>

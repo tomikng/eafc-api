@@ -15,7 +15,7 @@ namespace EAFC.Core.Models
         // public long PCRange { get; set; }
         public DateTime AddedOn { get; set; }
         public int Rating { get; set; }
-        public string Position { get; set; }
+        public string? Position { get; set; }
         public string ProfileUrl { get; set; }
     }
 }
