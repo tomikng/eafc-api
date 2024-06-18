@@ -21,6 +21,9 @@
             <TabItem Header="General">
                 <StackPanel Margin="10">
                     <TextBlock Text="General Settings" FontWeight="Bold" FontSize="14"/>
+                    <CheckBox Content="Enable Notifications" IsChecked="{Binding EnableNotifications}" Margin="0,10,0,0"/>
+                    <TextBlock Text="Allowed Platforms (comma-separated):" Margin="0,10,0,0"/>
+                    <TextBox Text="{Binding AllowedPlatforms}" Watermark="e.g., Discord,Platform2"/>
                     <TextBlock Text="CRON Expression:" Margin="0,10,0,0"/>
                     <TextBox Text="{Binding CronExpression}" Watermark="Enter CRON Expression"/>
                 </StackPanel>

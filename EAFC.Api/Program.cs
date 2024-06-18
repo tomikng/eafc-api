@@ -6,7 +6,9 @@ using EAFC.Services;
 using EAFC.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
-using Quartz.Spi;
+using System;
+using System.IO;
+using EAFC.Notifications.interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,11 +39,13 @@ builder.Services.AddQuartzHostedService(q =>
     q.WaitForJobsToComplete = true;
 });
 
-builder.Services.AddSingleton<INotificationService, DiscordNotificationService>(provider => new DiscordNotificationService(
-    builder.Configuration["DiscordBotToken"] ?? throw new InvalidOperationException(),
-    provider,
-    builder.Configuration));
-
+builder.Services.AddSingleton<INotificationServiceFactory, NotificationServiceFactory>();
+builder.Services.AddSingleton<INotificationService>(provider =>
+{
+    var factory = provider.GetRequiredService<INotificationServiceFactory>();
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    return factory.CreateNotificationService(provider, configuration) ?? throw new InvalidOperationException();
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -52,8 +56,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 var app = builder.Build();
 
-var discordService = app.Services.GetRequiredService<INotificationService>() as DiscordNotificationService;
-discordService?.InitializeAsync().GetAwaiter().GetResult();
+var notificationService = app.Services.GetRequiredService<INotificationService>();
+(notificationService as IInitializable)?.InitializeAsync().GetAwaiter().GetResult();
 
 if (app.Environment.IsDevelopment())
 {

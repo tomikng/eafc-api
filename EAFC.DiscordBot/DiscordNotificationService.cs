@@ -3,13 +3,14 @@ using Discord;
 using Discord.WebSocket;
 using EAFC.Core.Models;
 using EAFC.Notifications;
+using EAFC.Notifications.interfaces;
 using EAFC.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EAFC.DiscordBot;
 
-public class DiscordNotificationService : INotificationService
+public class DiscordNotificationService : INotificationService, IInitializable
 {
     private readonly DiscordSocketClient _client;
     private readonly string _token;
@@ -17,15 +18,15 @@ public class DiscordNotificationService : INotificationService
     private readonly ulong _guildId;
     private readonly ulong _channelId;
 
-    public DiscordNotificationService(string token, IServiceProvider serviceProvider, IConfiguration configuration)
+    public DiscordNotificationService(IServiceProvider serviceProvider, IConfiguration configuration)
     {
         _client = new DiscordSocketClient();
         _client.Log += LogAsync;
         _client.SlashCommandExecuted += SlashCommandHandler;
-        _token = token;
+        _token = configuration["DiscordBotToken"] ?? throw new InvalidOperationException("DiscordBotToken is not configured.");
         _serviceProvider = serviceProvider;
-        _guildId = ulong.Parse(configuration["DiscordGuildId"] ?? throw new InvalidDataException());
-        _channelId = ulong.Parse(configuration["DiscordChannelId"] ?? throw new InvalidDataException());
+        _guildId = ulong.Parse(configuration["DiscordGuildId"] ?? throw new InvalidDataException("DiscordGuildId is not configured."));
+        _channelId = ulong.Parse(configuration["DiscordChannelId"] ?? throw new InvalidDataException("DiscordChannelId is not configured."));
     }
 
     public async Task InitializeAsync()

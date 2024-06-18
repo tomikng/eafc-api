@@ -12,7 +12,24 @@ namespace EAFC.Configurator.ViewModels
     {
         private readonly string _configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
 
+        private bool _enableNotifications;
+
+        public bool EnableNotifications
+        {
+            get => _enableNotifications;
+            set => this.RaiseAndSetIfChanged(ref _enableNotifications, value);
+        }
+
+        private string _allowedPlatforms;
+
+        public string AllowedPlatforms
+        {
+            get => _allowedPlatforms;
+            set => this.RaiseAndSetIfChanged(ref _allowedPlatforms, value);
+        }
+
         private string? _discordGuildId;
+
         public string? DiscordGuildId
         {
             get => _discordGuildId;
@@ -20,6 +37,7 @@ namespace EAFC.Configurator.ViewModels
         }
 
         private string? _discordChannelId;
+
         public string? DiscordChannelId
         {
             get => _discordChannelId;
@@ -27,24 +45,11 @@ namespace EAFC.Configurator.ViewModels
         }
 
         private string? _cronExpression;
+
         public string? CronExpression
         {
             get => _cronExpression;
             set => this.RaiseAndSetIfChanged(ref _cronExpression, value);
-        }
-
-        private string _terminalOutput;
-        public string TerminalOutput
-        {
-            get => _terminalOutput;
-            set => this.RaiseAndSetIfChanged(ref _terminalOutput, value);
-        }
-
-        private bool _isServerRunning;
-        public bool IsServerRunning
-        {
-            get => _isServerRunning;
-            set => this.RaiseAndSetIfChanged(ref _isServerRunning, value);
         }
 
         public ICommand SaveCommand { get; }
@@ -59,6 +64,8 @@ namespace EAFC.Configurator.ViewModels
         {
             var config = new
             {
+                EnableNotifications,
+                AllowedPlatforms = AllowedPlatforms.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries),
                 DiscordGuildId,
                 DiscordChannelId,
                 CronExpression
@@ -79,6 +86,8 @@ namespace EAFC.Configurator.ViewModels
 
                 if (config != null)
                 {
+                    EnableNotifications = config.EnableNotifications;
+                    AllowedPlatforms = string.Join(",", config.AllowedPlatforms);
                     DiscordGuildId = config.DiscordGuildId;
                     DiscordChannelId = config.DiscordChannelId;
                     CronExpression = config.CronExpression;
@@ -90,9 +99,12 @@ namespace EAFC.Configurator.ViewModels
 
         private class Config
         {
+            public bool EnableNotifications { get; set; }
+            public string[] AllowedPlatforms { get; set; } = Array.Empty<string>();
             public string? DiscordGuildId { get; set; }
             public string? DiscordChannelId { get; set; }
             public string? CronExpression { get; set; }
         }
+
     }
 }
